@@ -4,6 +4,15 @@ exports.leaderboard = functions
     .region("us-central1")
     .https
     .onRequest((request, response) => {
+      response.set("Access-Control-Allow-Origin", "*");
+      response.set("Access-Control-Allow-Methods", "GET");
+
+      if (request.method === "OPTIONS") {
+        // stop preflight requests here
+        request.status(204).send();
+        return;
+      }
+
       const leaderboard = [
         {
           username: "gamerguy1",
