@@ -1,7 +1,7 @@
 const functions = require("firebase-functions");
 
 const {initializeApp} = require("firebase/app");
-const {getFirestore, collection, getDocs} = require("firebase/firestore/lite");
+const {getFirestore, collection, getDocs} = require("firebase/firestore");
 
 exports.gifs = functions
     .region("us-central1")
@@ -24,11 +24,12 @@ exports.gifs = functions
 
       // Initialize Cloud Firestore and get a reference to the service
       const db = getFirestore(app);
-
+      
       const querySnapshot = await getDocs(collection(db, "gifs"));
-      const gifs = querySnapshot.map((doc) => {
+      const gifs = [];
+      querySnapshot.forEach((doc) => {
         console.log(`${doc.id} => ${doc.data()}`);
-        return doc.data()?.gif;
+        gifs.push(doc.data());
       });
 
       response.status(200).send({gifs});
