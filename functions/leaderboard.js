@@ -13,11 +13,11 @@ async function listAllUsers() {
   });
 
   users = users.results.map((user) => {
-    user = _pick(user.data, ["gamertag", "streak"]);
-    user.streak = user.streak || 0;
+    user = _pick(user.data, ["gamertag", "longest_streak"]);
+    user.longest_streak = user.longest_streak || 0;
     return user;
   });
-  return _sortBy(users, (user) => -1 * user.streak);
+  return _sortBy(users, (user) => -1 * user.longest_streak);
 }
 
 exports.leaderboard = functions
