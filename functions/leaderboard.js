@@ -13,7 +13,7 @@ async function listAllUsers() {
   });
 
   users = users.results.map((user) => {
-    user = _pick(user.data, ["gamertag", "longest_streak"]);
+    user = _pick(user.data, ["gamertag", "longest_streak", "streak"]);
     user.longest_streak = user.longest_streak || 0;
     return user;
   });
