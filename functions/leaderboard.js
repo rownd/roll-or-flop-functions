@@ -1,9 +1,29 @@
+const _pick = require("lodash/pick");
+const _sortBy = require("lodash/sortBy");
 const functions = require("firebase-functions");
+const {makeRequest} = require("./lib/api");
+
+const RowndAppId = process.env.ROWND_APP_ID;
+
+async function listAllUsers() {
+  let users = await makeRequest(`/applications/${RowndAppId}/users/data`, {
+    params: {
+      page_size: 1000, // TODO: pagination.
+    },
+  });
+
+  users = users.results.map((user) => {
+    user = _pick(user.data, ["gamertag", "streak"]);
+    user.streak = user.streak || 0;
+    return user;
+  });
+  return _sortBy(users, (user) => -1 * user.streak);
+}
 
 exports.leaderboard = functions
     .region("us-central1")
     .https
-    .onRequest((request, response) => {
+    .onRequest(async (request, response) => {
       response.set("Access-Control-Allow-Origin", "*");
       response.set("Access-Control-Allow-Methods", "GET");
 
@@ -13,23 +33,6 @@ exports.leaderboard = functions
         return;
       }
 
-      const leaderboard = [
-        {
-          username: "gamerguy1",
-          score: 10,
-        },
-        {
-          username: "playa452",
-          score: 10,
-        },
-        {
-          username: "leetz0r",
-          score: 9,
-        },
-        {
-          username: "bad2thab0ne",
-          score: 1,
-        },
-      ];
+      const leaderboard = await listAllUsers();
       response.status(200).send({leaderboard});
     });

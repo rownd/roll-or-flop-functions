@@ -8,7 +8,11 @@ module.exports = {
     "eslint:recommended",
     "google",
   ],
+  parserOptions: {
+    "ecmaVersion": 8,
+  },
   rules: {
-    quotes: ["error", "double"],
+    "quotes": ["error", "double"],
+    "require-jsdoc": 0,
   },
 };
